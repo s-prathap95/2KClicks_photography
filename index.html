@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2KClick's Photography | Professional Photography</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow-x: hidden;
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.9);
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: flex-end;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #d4af37;
+        }
+
+        /* Home Section */
+        .split-hero {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Left Side (Logo) */
+        .hero-left {
+            width: 40%;
+            background: rgb(250, 246, 246);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .logo-pulse {
+            max-width: 500px;
+            animation: pulse 3s infinite, float 5s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.9; }
+            50% { opacity: 1; transform: scale(1.03); }
+            100% { opacity: 0.9; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Right Side (Text) */
+        .hero-right {
+            width: 60%;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem;
+            position: relative;
+        }
+
+        .title-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        #studio-name {
+            font-size: 2.8rem;
+            font-weight: 700;
+            display: inline-block;
+            color: #222;
+            line-height: 1.2;
+            font-family: 'Playfair Display', serif;
+        }
+
+        #studio-name::after {
+            content: "|";
+            animation: blink 0.7s infinite;
+            color: #000;
+            font-weight: 300;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        .studio-underline {
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            height: 3px;
+            width: 0;
+            background: #000;
+            transition: width 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        #tagline {
+            font-size: 1.3rem;
+            color: #555;
+            margin-bottom: 1rem;
+            min-height: 1.8rem;
+            transition: opacity 0.5s ease;
+            line-height: 1.5;
+            font-weight: 300;
+        }
+
+        .promo-text {
+            font-size: 1.2rem;
+            color: #d4af37;
+            margin: 1.5rem 0;
+            line-height: 1.6;
+            padding-left: 1.5rem;
+            border-left: 3px solid #d4af37;
+            font-weight: 400;
+        }
+
+        .cta-button {
+            padding: 15px 35px;
+            background: #000;
+            color: #fff;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            align-self: flex-start;
+            text-decoration: none;
+            border-radius: 3px;
+            letter-spacing: 0.5px;
+            margin-top: 1rem;
+        }
+
+        .cta-button:hover {
+            background: #333;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Scroll Gallery */
+        .scroll-gallery {
+            padding: 5rem 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8rem;
+            opacity: 0;
+            transition: all 0.10s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .gallery-item.visible {
+            opacity: 1;
+        }
+
+        /* Odd items (1,3,5...) - image left, text right */
+        .gallery-item:nth-child(odd) {
+            flex-direction: row;
+        }
+        .gallery-item:nth-child(odd) .gallery-image {
+            transform: translateX(-50px);
+        }
+        .gallery-item:nth-child(odd) .gallery-text {
+            transform: translateX(50px);
+        }
+
+        /* Even items (2,4,6...) - image right, text left */
+        .gallery-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        .gallery-item:nth-child(even) .gallery-image {
+            transform: translateX(50px);
+        }
+        .gallery-item:nth-child(even) .gallery-text {
+            transform: translateX(-50px);
+        }
+
+        .gallery-item.visible .gallery-image,
+        .gallery-item.visible .gallery-text {
+            transform: translateX(0);
+        }
+
+        .gallery-image {
+            width: 50%;
+            overflow: hidden;
+            transition: transform 0.30s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .gallery-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .gallery-text {
+            width: 50%;
+            padding: 2rem;
+            transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .gallery-text h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #222;
+        }
+
+        .gallery-text p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        /* Gallery Button */
+        .gallery-btn-container {
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .gallery-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #d4af37 0%, #f0d37d 100%);
+            color: #111;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .gallery-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem;
+                justify-content: center;
+            }
+            
+            .nav-links {
+                gap: 1.5rem;
+            }
+            
+            .split-hero {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .hero-left, .hero-right {
+                width: 100%;
+                padding: 2rem 1.5rem;
+            }
+            
+            .hero-left {
+                height: 40vh;
+            }
+            
+            .hero-right {
+                height: 60vh;
+            }
+            
+            #studio-name {
+                font-size: 2rem;
+            }
+            
+            #tagline {
+                font-size: 1.1rem;
+            }
+            
+            .promo-text {
+                font-size: 1rem;
+                margin: 1rem 0;
+            }
+            
+            .cta-button {
+                padding: 12px 25px;
+            }
+
+            .gallery-item,
+            .gallery-item:nth-child(even) {
+                flex-direction: column;
+                margin-bottom: 4rem;
+            }
+
+            .gallery-image,
+            .gallery-text {
+                width: 100%;
+            }
+
+            .gallery-item:nth-child(odd) .gallery-image,
+            .gallery-item:nth-child(even) .gallery-image,
+            .gallery-item:nth-child(odd) .gallery-text,
+            .gallery-item:nth-child(even) .gallery-text {
+                transform: translateY(30px);
+            }
+
+            .gallery-item.visible .gallery-image,
+            .gallery-item.visible .gallery-text {
+                transform: translateY(0);
+            }
+
+            .gallery-text {
+                padding: 1.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-links">
+            <a href="#" class="nav-link">Home</a>
+            <a href="#" class="nav-link">About Us</a>
+            <a href="#" class="nav-link">Our Works</a>
+            <a href="#" class="nav-link">Contact Us</a>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <div id="home">
+        <div class="split-hero">
+            <!-- Left Side (Logo) -->
+            <div class="hero-left">
+                <img src="/IMG_1723.JPEG" alt="Studio Logo" class="logo-pulse">
+            </div>
+            
+            <!-- Right Side (Animated Text) -->
+            <div class="hero-right">
+                <div class="title-container">
+                    <h1 id="studio-name"></h1>
+                    <div class="studio-underline"></div>
+                </div>
+                <p id="tagline"></p>
+                
+                <div class="promo-text">
+                    We capture your special moments with beautiful photos and videos. 
+                    Great quality at fair prices. Contact us to discuss your event!
+                </div>
+                
+                <a id="whatsapp-button" class="cta-button" target="_blank">Chat on WhatsApp</a>
+            </div>
+        </div>
+
+        <!-- Scroll Gallery -->
+        <div class="scroll-gallery">
+            <!-- Item 1 (Image left, text right) -->
+            <div class="gallery-item">
+                <div class="gallery-image">
+                    <img src="/SPBS5322.JPG" alt="Wedding Photography">
+                </div>
+                <div class="gallery-text">
+                    <h3>Wedding Photography</h3>
+                    <p>Capturing the magic of your special day with timeless elegance. Our wedding photography preserves every tear, laugh, and dance move in stunning clarity.</p>
+                </div>
+            </div>
+
+            <!-- Item 2 (Image right, text left) -->
+            <div class="gallery-item">
+                <div class="gallery-image">
+                    <img src="/GK1_2090.jpg" alt="Portrait Photography">
+                </div>
+                <div class="gallery-text">
+                    <h3>Portrait Sessions</h3>
+                    <p>Professional portraits that reveal your true personality. Perfect for professional headshots, family portraits, or personal branding.</p>
+                </div>
+            </div>
+
+            <!-- Item 3 (Image left, text right) -->
+            <div class="gallery-item">
+                <div class="gallery-image">
+                    <img src="/GK1_5239.jpg" alt="Event Photography">
+                </div>
+                <div class="gallery-text">
+                    <h3>Event Coverage</h3>
+                    <p>From corporate events to birthday celebrations, we document your important moments with artistic flair and attention to detail.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gallery Button -->
+        <div class="gallery-btn-container">
+            <a href="#" class="gallery-btn">View Full Gallery</a>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const config = {
+            studioName: "2kClick's Photography",
+            taglines: [
+                "Beautiful photos for special moments",
+                "Professional photography services",
+                "Your memories, our passion"
+            ],
+            whatsapp: {
+                number: "9876543210", 
+                message: "Hi! I'm interested in booking a photography session."
+            },
+            typingSpeed: 80,
+            underlineDelay: 300,
+            loopDelay: 4000
+        };
+
+        // DOM Elements
+        const studioNameEl = document.getElementById("studio-name");
+        const taglineEl = document.getElementById("tagline");
+        const underlineEl = document.querySelector(".studio-underline");
+        const whatsappBtn = document.getElementById("whatsapp-button");
+        const galleryItems = document.querySelectorAll(".gallery-item");
+
+        // Initialize WhatsApp Links
+        function initWhatsApp() {
+            const encodedMsg = encodeURIComponent(config.whatsapp.message);
+            const whatsappUrl = `https://wa.me/${config.whatsapp.number}?text=${encodedMsg}`;
+            
+            whatsappBtn.href = whatsappUrl;
+        }
+
+        // Typing Animation
+        function typeWriter(text, element, callback) {
+            let i = 0;
+            element.innerHTML = "";
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, config.typingSpeed);
+                } else if (callback) {
+                    setTimeout(callback, config.underlineDelay);
+                }
+            }
+            
+            type();
+        }
+
+        // Underline Animation
+        function animateUnderline() {
+            underlineEl.style.width = "100%";
+            setTimeout(cycleAnimations, config.loopDelay);
+        }
+
+        // Cycle Through Taglines
+        function cycleAnimations() {
+            underlineEl.style.width = "0";
+            taglineEl.style.opacity = "0";
+            
+            currentTaglineIndex = (currentTaglineIndex + 1) % config.taglines.length;
+            
+            setTimeout(() => {
+                taglineEl.textContent = config.taglines[currentTaglineIndex];
+                taglineEl.style.opacity = "1";
+                typeWriter(config.studioName, studioNameEl, animateUnderline);
+            }, 500);
+        }
+
+        // Scroll Animations for Gallery
+        function checkScroll() {
+            galleryItems.forEach(item => {
+                const itemTop = item.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (itemTop < windowHeight - 100) {
+                    item.classList.add("visible");
+                }
+            });
+        }
+
+        // Initialize
+        window.addEventListener('load', checkScroll);
+        window.addEventListener('scroll', checkScroll);
+
+        // Start Animations
+        let currentTaglineIndex = 0;
+        initWhatsApp();
+        taglineEl.textContent = config.taglines[0];
+        typeWriter(config.studioName, studioNameEl, animateUnderline);
+
+        // Prevent navigation for nav links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+            });
+        });
+
+        // Prevent navigation for gallery button
+        document.querySelector('.gallery-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html>
