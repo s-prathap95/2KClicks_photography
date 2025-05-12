@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2KClick's Photography</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="IMG_1722.PNG">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow-x: hidden;
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.9);
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: flex-end;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #d4af37;
+        }
+
+        /* Page Sections */
+        .page-section {
+            min-height: 100vh;
+            padding: 8rem 3rem 3rem;
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        /* Home Section */
+        .split-hero {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Left Side (Logo) */
+        .hero-left {
+            width: 40%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .logo-pulse {
+            max-width: 500px;
+            animation: pulse 3s infinite, float 5s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.9; }
+            50% { opacity: 1; transform: scale(1.03); }
+            100% { opacity: 0.9; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Right Side (Text) */
+        .hero-right {
+            width: 60%;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem;
+            position: relative;
+        }
+
+        .title-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        #studio-name {
+            font-size: 2.8rem;
+            font-weight: 700;
+            display: inline-block;
+            color: #222;
+            line-height: 1.2;
+            font-family: 'Playfair Display', serif;
+        }
+
+        #studio-name::after {
+            content: "|";
+            animation: blink 0.7s infinite;
+            color: #000;
+            font-weight: 300;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        .studio-underline {
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            height: 3px;
+            width: 0;
+            background: #000;
+            transition: width 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        #tagline {
+            font-size: 1.3rem;
+            color: #555;
+            margin-bottom: 1rem;
+            min-height: 1.8rem;
+            transition: opacity 0.5s ease;
+            line-height: 1.5;
+            font-weight: 300;
+        }
+
+        .promo-text {
+            font-size: 1.2rem;
+            color: #d4af37;
+            margin: 1.5rem 0;
+            line-height: 1.6;
+            padding-left: 1.5rem;
+            border-left: 3px solid #d4af37;
+            font-weight: 400;
+        }
+
+        .cta-button {
+            padding: 15px 35px;
+            background: #000;
+            color: #fff;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            align-self: flex-start;
+            text-decoration: none;
+            border-radius: 3px;
+            letter-spacing: 0.5px;
+            margin-top: 1rem;
+        }
+
+        .cta-button:hover {
+            background: #333;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Scroll Gallery */
+        .scroll-gallery {
+            padding: 5rem 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8rem;
+            opacity: 0;
+            transition: all 0.05s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .gallery-item.visible {
+            opacity: 1;
+        }
+
+        /* Odd items (1,3,5...) - image left, text right */
+        .gallery-item:nth-child(odd) {
+            flex-direction: row;
+        }
+        .gallery-item:nth-child(odd) .gallery-image {
+            transform: translateX(-50px);
+        }
+        .gallery-item:nth-child(odd) .gallery-text {
+            transform: translateX(50px);
+        }
+
+        /* Even items (2,4,6...) - image right, text left */
+        .gallery-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        .gallery-item:nth-child(even) .gallery-image {
+            transform: translateX(50px);
+        }
+        .gallery-item:nth-child(even) .gallery-text {
+            transform: translateX(-50px);
+        }
+
+        .gallery-item.visible .gallery-image,
+        .gallery-item.visible .gallery-text {
+            transform: translateX(0);
+        }
+
+        .gallery-image {
+            width: 50%;
+            overflow: hidden;
+            transition: transform 0.50s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .gallery-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .gallery-text {
+            width: 50%;
+            padding: 2rem;
+            transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .gallery-text h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #222;
+        }
+
+        .gallery-text p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        /* Gallery Button */
+        .gallery-btn-container {
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .gallery-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #d4af37 0%, #f0d37d 100%);
+            color: #111;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .gallery-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+        }
+
+        /* About Us Section */
+        .about-section {
+            background: #f9f9f9;
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #222;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Contact Us Section */
+        .contact-section {
+            background: #fff;
+        }
+
+        .contact-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .contact-icon {
+            font-size: 1.5rem;
+            color: #d4af37;
+        }
+
+        /* Works Section */
+        .works-section {
+            padding: 80px 20px;
+            background: #f9f9f9;
+            min-height: 100vh;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 50px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s forwards;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+
+        #portfolio-search {
+            width: 100%;
+            padding: 12px 20px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        #portfolio-search:focus {
+            border-color: #d4af37;
+            box-shadow: 0 2px 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .portfolio-card {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            aspect-ratio: 4/3;
+            cursor: pointer;
+        }
+
+        .portfolio-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .card-overlay h3 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 10px;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .card-overlay p {
+            transform: translateY(20px);
+            transition: transform 0.3s ease 0.1s;
+            font-weight: 300;
+        }
+
+        .portfolio-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .portfolio-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .portfolio-card:hover .card-overlay {
+            opacity: 1;
+        }
+
+        .portfolio-card:hover .card-overlay h3,
+        .portfolio-card:hover .card-overlay p {
+            transform: translateY(0);
+        }
+
+        /* Enhanced Lightbox Styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 40px 20px;
+        }
+
+        .lightbox-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .lightbox-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            color: white;
+            position: sticky;
+            top: 0;
+            background: rgba(0,0,0,0.95);
+            padding: 20px 0;
+            z-index: 1001;
+        }
+
+        .lightbox-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        .close-lightbox {
+            background: none;
+            border: none;
+            color: red;
+            font-size: 2.5rem;
+            cursor: pointer;
+            padding: 0 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .close-lightbox:hover {
+            transform: rotate(90deg);
+        }
+
+        /* Pinterest-style Masonry Grid */
+        .lightbox-gallery {
+            columns: 4;
+            column-gap: 20px;
+        }
+
+        .lightbox-item {
+            break-inside: avoid;
+            margin-bottom: 20px;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .lightbox-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .lightbox-item:hover img {
+            transform: scale(1.03);
+        }
+
+        /* Full Image View */
+        .full-image-view {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.98);
+            z-index: 1002;
+            text-align: center;
+        }
+
+        .full-image-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .full-image {
+            max-width: 90%;
+            max-height: 80vh;
+            object-fit: contain;
+        }
+
+        .full-image-caption {
+            color: white;
+            margin-top: 20px;
+            font-size: 1.2rem;
+        }
+
+        .close-full-view {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: none;
+            border: none;
+            color: red;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+           .close-full-view:hover {
+             transform: rotate(90deg);
+           }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem;
+                justify-content: center;
+            }
+            
+            .nav-links {
+                gap: 1.5rem;
+            }
+            
+            .split-hero {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .hero-left, .hero-right {
+                width: 100%;
+                padding: 2rem 1.5rem;
+            }
+            
+            .hero-left {
+                height: 40vh;
+            }
+            
+            .hero-right {
+                height: 60vh;
+            }
+            
+            #studio-name {
+                font-size: 2rem;
+            }
+            
+            #tagline {
+                font-size: 1.1rem;
+            }
+            
+            .promo-text {
+                font-size: 1rem;
+                margin: 1rem 0;
+            }
+            
+            .cta-button {
+                padding: 12px 25px;
+            }
+            
+            .page-section {
+                padding: 6rem 1.5rem 3rem;
+            }
+
+            .gallery-item,
+            .gallery-item:nth-child(even) {
+                flex-direction: column;
+                margin-bottom: 4rem;
+            }
+
+            .gallery-image,
+            .gallery-text {
+                width: 100%;
+            }
+
+            .gallery-item:nth-child(odd) .gallery-image,
+            .gallery-item:nth-child(even) .gallery-image,
+            .gallery-item:nth-child(odd) .gallery-text,
+            .gallery-item:nth-child(even) .gallery-text {
+                transform: translateY(30px);
+            }
+
+            .gallery-item.visible .gallery-image,
+            .gallery-item.visible .gallery-text {
+                transform: translateY(0);
+            }
+
+            .gallery-text {
+                padding: 1.5rem 0;
+            }
+
+            /* Works Section Mobile */
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .lightbox-gallery {
+                columns: 2;
+            }
+            
+            .lightbox-title {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lightbox-gallery {
+                columns: 1;
+            }
+            
+            .full-image {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-links">
+            <a href="#" class="nav-link" data-section="home">Home</a>
+            <a href="#" class="nav-link" data-section="about">About Us</a>
+            <a href="#" class="nav-link" data-section="works">Our Works</a>
+            <a href="#" class="nav-link" data-section="contact">Contact Us</a>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="page-section active">
+        <div class="split-hero">
+            <!-- Left Side (Logo) -->
+            <div class="hero-left">
+                <img src="IMG_1723.JPEG" alt="Studio Logo" class="logo-pulse">
+            </div>
+            
+            <!-- Right Side (Animated Text) -->
+            <div class="hero-right">
+                <div class="title-container">
+                    <h1 id="studio-name"></h1>
+                    <div class="studio-underline"></div>
+                </div>
+                <p id="tagline"></p>
+                
+                <div class="promo-text">
+                    We capture your special moments with beautiful photos and videos. 
+                    Great quality at fair prices. Contact us to discuss your event!
+                </div>
+                
+                <a id="whatsapp-button" class="cta-button" target="_blank">Chat on WhatsApp</a>
+            </div>
+        </div>
+        
+        <!-- Scroll Gallery -->
+        <div class="scroll-gallery">
+            <!-- Item 1 (Image left, text right) -->
+            <div class="gallery-item">
+                <div class="gallery-image">
+                    <img src="baby shower/1.jpg" alt="baby shower Photography">
+                </div>
+                <div class="gallery-text">
+                    <h3>Baby shower Photography</h3>
+                    <p>Transforming the magic of your baby shower into enduring memories. We artfully capture the love, laughter, and happy tears that surround this beautiful celebration of new life.</p>
+                </div>
+            </div>
+
+            <!-- Item 2 (Image right, text left) -->
+            <div class="gallery-item">
+                <div class="gallery-image">
+                    <img src="couple shoot/GK1_2084.jpg" alt="Portrait Photography">
+                </div>
+                <div class="gallery-text">
+                    <h3>Portrait Sessions</h3>
+                    <p>Professional portraits that reveal your true personality. Perfect for professional headshots, family portraits, or personal branding.</p>
+                </div>
+            </div>
+
+            <!-- Item 3 (Image left, text right) -->
+            <div class="gallery-item">
+                <div class="gallery-image">
+                    <img src="commercial/GK1_0242.jpg" alt="Event Photography">
+                </div>
+                <div class="gallery-text">
+                    <h3>Event Coverage</h3>
+                    <p>From corporate events to birthday celebrations, we document your important moments with artistic flair and attention to detail.</p>
+                </div>
+            </div>
+          <!-- Item 4 (Image right, text left) -->
+            <div class="gallery-item">
+                <div class="gallery-image">
+                    <img src="model shoot/SPBS0033.jpg" alt="Model Photoshoot">
+                </div>
+                <div class="gallery-text">
+                    <h3>Model Photoshoot</h3>
+                    <p>Capturing striking elegance and bold creativity in every frame. Our model photography transforms poses into art, highlighting your unique beauty and confidence with precision lighting and visionary composition.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gallery Button -->
+        <div class="gallery-btn-container">
+            <a href="#" class="gallery-btn" data-section="works">View Full Gallery</a>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="page-section about-section">
+        <div class="about-content">
+            <h2>About 2KClick's Photography</h2>
+            <p>2KClicks photography📸Capturing moments,creating memories.specializing in portraits,events,wedding and creative photoshoots.lets turn your special moments into timeless work of art.✨
+            </p>
+            <p>We specialize in wedding photography, portrait sessions, and commercial shoots, offering a personalized approach to each client. Our state-of-the-art studio is equipped with the latest technology, ensuring stunning results whether we're shooting on location or in our controlled studio environment.</p>
+        </div>
+    </section>
+
+    <!-- Our Works Section -->
+    <section id="works" class="page-section works-section">
+        <h2 class="section-title">Our Master Works</h2>
+      
+        
+        <!-- Search Function -->
+        <div class="search-container">
+            <input type="text" id="portfolio-search" placeholder="Search portfolios...">
+        </div>
+        <h3>click to explore</h3>
+        <br><br>
+        <!-- Portfolio Grid -->
+        <div class="portfolio-grid">
+            <!-- kids Portfolio Card -->
+            <div class="portfolio-card" data-category="kids" data-title="Kids Photography">
+                <img src="kids/SPBS4222.jpg" alt="Kids Photography">
+                <div class="card-overlay">
+                    <h3>Kids Photography</h3>
+                    <p>Click to view images</p>
+                </div>
+            </div>
+            
+            <!-- model Portfolio Card -->
+            <div class="portfolio-card" data-category="model" data-title="model photoshoot">
+                <img src="model shoot/SPBS0247.jpg" alt="model Photoshoot">
+                <div class="card-overlay">
+                    <h3>model photoshoot</h3>
+                    <p>Click to view images</p>
+                </div>
+            </div>
+            
+            <!-- couple Portfolio Card -->
+            <div class="portfolio-card" data-category="couple" data-title="couple photoshoot">
+                <img src="couple shoot/GK1_1753.jpg" alt="couple Photoshoot">
+                <div class="card-overlay">
+                    <h3>Couple photoshoot</h3>
+                    <p>Click to view images</p>
+                </div>
+            </div>
+            
+            <!-- Commercial Portfolio Card -->
+            <div class="portfolio-card" data-category="commercial" data-title="Commercial Shoots">
+                <img src="commercial/GK1_1036.jpg" alt="Commercial Photography">
+                <div class="card-overlay">
+                    <h3>Commercial Shoots</h3>
+                    <p>Click to view images</p>
+                </div>
+            </div>
+            
+            <!-- puberty Portfolio Card -->
+            <div class="portfolio-card" data-category="puberty" data-title="puberty Photography">
+                <img src="puberty/SPBS0099-24.jpg" alt="puberty Photography">
+                <div class="card-overlay">
+                    <h3>Puberty Photography</h3>
+                    <p>Click to view images</p>
+                </div>
+            </div>
+            
+            <!-- family Portfolio Card -->
+            <div class="portfolio-card" data-category="family" data-title="family Photoshoot">
+                <img src="family/PRFT3215.jpg" alt="family photoshoot">
+                <div class="card-overlay">
+                    <h3>Family photoshoot</h3>
+                    <p>Click to view images</p>
+                </div>
+            </div>
+             <!-- baby shower Portfolio Card -->
+            <div class="portfolio-card" data-category="babyshower" data-title="baby shower Photography">
+                <img src="baby shower/GK1_5239.jpg" alt="baby shower Photography">
+                <div class="card-overlay">
+                    <h3>baby shower photography</h3>
+                    <p>Click to view images</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Enhanced Lightbox Gallery -->
+        <div class="lightbox" id="portfolio-lightbox">
+            <div class="lightbox-content">
+                <div class="lightbox-header">
+                    <h2 class="lightbox-title" id="lightbox-title">kids Photography</h2>
+                    <button class="close-lightbox">&times;</button>
+                </div>
+                <div class="lightbox-gallery" id="lightbox-gallery">
+                    <!-- Images will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Full Image View -->
+        <div class="full-image-view" id="full-image-view">
+            <div class="full-image-container">
+                <img class="full-image" id="full-image" src="" alt="">
+                <p class="full-image-caption" id="full-image-caption"></p>
+                <button class="close-full-view">&times;</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Us Section -->
+    <section id="contact" class="page-section contact-section">
+        <div class="contact-content">
+            <h2 style="font-family: 'Playfair Display', serif;">Get In Touch</h2>
+            
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span class="contact-icon">📍</span>
+                    <span>24/4,School Street
+                    ,Cuddalore 607002,TamilNadu, India</span>
+                </div>
+                
+                <div class="contact-item">
+                    <span class="contact-icon">✉️</span>
+                    <span>vinoth.vr72@gmail.com</span>
+                </div>
+                
+                <div class="contact-item">
+                    <span class="contact-icon">📞</span>
+                    <span>+91 9790030723 </span>
+                </div>
+                <a href="https://www.instagram.com/vinoth_vimal_raj/" target="_blank" rel="noopener noreferrer">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/1024px-Instagram_logo_2016.svg.png" 
+       alt="Instagram" 
+       style="width: 30px; height: 30px;">
+        vinoth_vimal_raj
+</a>
+            </div>
+            
+            <a id="contact-whatsapp-button" class="cta-button" target="_blank" 
+               style="align-self: flex-start; margin-top: 1rem;">
+               Chat on WhatsApp
+            </a>
+        </div>
+    </section>
+
+    <script>
+        // Configuration
+        const config = {
+            studioName: "2kClick's Photography",
+            taglines: [
+                "Beautiful photos for special moments",
+                "Professional photography services",
+                "Your memories, our passion"
+            ],
+            whatsapp: {
+                number: "+91 97900 30723", 
+                message: "Hi! I'm interested in booking a photography session."
+            },
+            typingSpeed: 80,
+            underlineDelay: 300,
+            loopDelay: 4000
+        };
+
+        // DOM Elements
+        const studioNameEl = document.getElementById("studio-name");
+        const taglineEl = document.getElementById("tagline");
+        const underlineEl = document.querySelector(".studio-underline");
+        const whatsappBtn = document.getElementById("whatsapp-button");
+        const contactWhatsappBtn = document.getElementById("contact-whatsapp-button");
+        const navLinks = document.querySelectorAll(".nav-link");
+        const pageSections = document.querySelectorAll(".page-section");
+        const galleryItems = document.querySelectorAll(".gallery-item");
+        const galleryBtn = document.querySelector('.gallery-btn');
+
+        // Initialize WhatsApp Links
+        function initWhatsApp() {
+            const encodedMsg = encodeURIComponent(config.whatsapp.message);
+            const whatsappUrl = `https://wa.me/${config.whatsapp.number}?text=${encodedMsg}`;
+            
+            whatsappBtn.href = whatsappUrl;
+            contactWhatsappBtn.href = whatsappUrl;
+        }
+
+        // Typing Animation
+        function typeWriter(text, element, callback) {
+            let i = 0;
+            element.innerHTML = "";
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, config.typingSpeed);
+                } else if (callback) {
+                    setTimeout(callback, config.underlineDelay);
+                }
+            }
+            
+            type();
+        }
+
+        // Underline Animation
+        function animateUnderline() {
+            underlineEl.style.width = "100%";
+            setTimeout(cycleAnimations, config.loopDelay);
+        }
+
+        // Cycle Through Taglines
+        function cycleAnimations() {
+            underlineEl.style.width = "0";
+            taglineEl.style.opacity = "0";
+            
+            currentTaglineIndex = (currentTaglineIndex + 1) % config.taglines.length;
+            
+            setTimeout(() => {
+                taglineEl.textContent = config.taglines[currentTaglineIndex];
+                taglineEl.style.opacity = "1";
+                typeWriter(config.studioName, studioNameEl, animateUnderline);
+            }, 500);
+        }
+
+        // Navigation
+        navLinks.forEach(link => {
+            link.addEventListener("click", (e) => {
+                e.preventDefault();
+                const sectionId = link.getAttribute("data-section");
+    
+                // Hide all sections
+                pageSections.forEach(section => {
+                    section.classList.remove("active");
+                });
+                
+                // Show selected section
+                document.getElementById(sectionId).classList.add("active");
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            });
+        });
+
+        // Gallery Button Click Handler
+        galleryBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const sectionId = galleryBtn.getAttribute('data-section');
+            
+            // Hide all sections
+            pageSections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        });
+
+        // Scroll Animations for Gallery
+        function checkScroll() {
+            galleryItems.forEach(item => {
+                const itemTop = item.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (itemTop < windowHeight - 100) {
+                    item.classList.add("visible");
+                }
+            });
+        }
+
+        // Portfolio Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample image data for each category (replace with your actual images)
+            const portfolioData = {
+                kids: [
+   { src: 'kids/2d2ddd.jpg', alt: 'kids photography' },
+   { src: 'kids/DSC_0341.jpg', alt: 'kids photography' },
+   { src: 'kids/GK1_5820.jpg', alt: 'kids photography' },
+   { src: 'kids/GK1_5822.jpg', alt: 'kids photography' },
+   { src: 'kids/GK1_6182.jpg', alt: 'kids photography' },
+   { src: 'kids/GK1_6185.jpg', alt: 'kids photography' },
+   { src: 'kids/GK1_6188.jpg', alt: 'kids photography' },
+   { src: 'kids/SPBS4151.jpg', alt: 'kids photography' },
+   { src: 'kids/SPBS4169.jpg', alt: 'kids photography' },
+   { src: 'kids/SPBS4202.jpg', alt: 'kids photography' },
+   { src: 'kids/SPBS4222.jpg', alt: 'kids photography' },
+   { src: 'kids/SPBS4250.jpg', alt: 'kids photography' },
+   { src: 'kids/SPBS4521.jpg', alt: 'kids photography' },
+   { src: 'kids/SPBS5829.jpg', alt: 'kids photography' },
+   { src: 'kids/SPBS9472-2.jpg', alt: 'kids photography' },
+   { src: 'kids/SPBS9568-31.jpg', alt: 'kids photography' },
+   { src: 'kids/SPBS9603-41.jpg', alt: 'kids photography' }
+ ],
+                model: [
+                  { src: 'model shoot/SPBS0007.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0016.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0018.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0020.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0021.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0027.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0028.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0029.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0030.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0033.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0035.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0041.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0042.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0045.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0060.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0063.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0067.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0068.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0077.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0090.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0091.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0093.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0133.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0153.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0158.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0191.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0208.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0217.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0221.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0224.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0240.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0247.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0257.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0259.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0263.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0268.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0269.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0270.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0274.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0284.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0286.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0287.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0290.jpg', alt: 'model photoshoot' },
+                  { src: 'model shoot/SPBS0296.jpg', alt: 'model photoshoot' }
+               ],
+                couple: [
+                  { src: 'couple shoot/GK1_1470.jpg', alt: 'couple photoshoot' },
+                  { src: 'couple shoot/GK1_1485.jpg', alt: 'couple photoshoot' },
+                  { src: 'couple shoot/GK1_1753.jpg', alt: 'couple photoshoot' },
+                  { src: 'couple shoot/GK1_1769.jpg', alt: 'couple photoshoot' },
+                  { src: 'couple shoot/GK1_1772.jpg', alt: 'couple photoshoot' },
+                  { src: 'couple shoot/GK1_1779.jpg', alt: 'couple photoshoot' },
+                  { src: 'couple shoot/GK1_1800.jpg', alt: 'couple photoshoot' },
+                  { src: 'couple shoot/GK1_1913.jpg', alt: 'couple photoshoot' },
+                  { src: 'couple shoot/GK1_2068.jpg', alt: 'couple photoshoot' },
+                  { src: 'couple shoot/GK1_2084.jpg', alt: 'couple photoshoot' },
+                  { src: 'couple shoot/GK1_2097.jpg', alt: 'couple photoshoot' },
+                  { src: 'couple shoot/GK1_2128.jpg', alt: 'couple photoshoot' },
+                  { src: 'couple shoot/GK1_6076.jpg', alt: 'couple photoshoot' },
+                  { src: 'couple shoot/PRFT3108.jpg', alt: 'couple photoshoot' },
+                  { src: 'couple shoot/PRFT3113.jpg', alt: 'couple photoshoot' },
+                  { src: 'couple shoot/PRFT3121-Edit.jpg', alt: 'couple photoshoot' },
+                  { src: 'couple shoot/PRFT3196.jpg', alt: 'couple photoshoot' },
+                  { src: 'couple shoot/PRFT3197.jpg', alt: 'couple photoshoot' },
+                  { src: 'couple shoot/PRFT3395.jpg', alt: 'couple photoshoot' },
+                  { src: 'couple shoot/SPBS5322.JPG', alt: 'couple photoshoot' }
+                ],
+                commercial: [
+    { src: 'commercial/1 (109).jpg', alt: 'commercial' },
+    { src: 'commercial/1 (154).jpg', alt: 'commercial' },
+    { src: 'commercial/1 (163).jpg', alt: 'commercial' },
+    { src: 'commercial/1 (177).jpg', alt: 'commercial' },
+    { src: 'commercial/1 (184).jpg', alt: 'commercial' },
+    { src: 'commercial/1 (185).jpg', alt: 'commercial' },
+    { src: 'commercial/1 (187).jpg', alt: 'commercial' },
+    { src: 'commercial/1 (21).jpg', alt: 'commercial' },
+    { src: 'commercial/1 (24).jpg', alt: 'commercial' },
+    { src: 'commercial/1 (39).jpg', alt: 'commercial' },
+    { src: 'commercial/1 (41).jpg', alt: 'commercial' },
+    { src: 'commercial/1 (64).jpg', alt: 'commercial' },
+    { src: 'commercial/1 (96).jpg', alt: 'commercial' },
+    { src: 'commercial/27.jpg', alt: 'commercial' },
+    { src: 'commercial/9.jpg', alt: 'commercial' },
+    { src: 'commercial/dr 7.jpg', alt: 'commercial' },
+    { src: 'commercial/GK1_0242.jpg', alt: 'commercial' },
+    { src: 'commercial/GK1_0246.jpg', alt: 'commercial' },
+    { src: 'commercial/GK1_1036.jpg', alt: 'commercial' },
+    { src: 'commercial/GK1_1142.jpg', alt: 'commercial' },
+    { src: 'commercial/GK1_1149.jpg', alt: 'commercial' },
+    { src: 'commercial/GK1_1158.jpg', alt: 'commercial' },
+    { src: 'commercial/GK1_7452.jpg', alt: 'commercial' },
+    { src: 'commercial/GK1_7456.jpg', alt: 'commercial' },
+    { src: 'commercial/SNAP7661.jpg', alt: 'commercial' },
+    { src: 'commercial/SNAP7665.jpg', alt: 'commercial' },
+    { src: 'commercial/SNAP7674.jpg', alt: 'commercial' },
+    { src: 'commercial/SNAP7677.jpg', alt: 'commercial' },
+    { src: 'commercial/SVS09488.jpg', alt: 'commercial' }
+],
+                puberty: [
+                  { src: 'puberty/SPBS0002-1.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0011-2.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0012-3.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0021-5.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0024-6.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0028-7.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0030-8.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0044-14.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0047-15.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0052-16.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0059-17.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0060-18.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0066-19.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0069-20.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0077-21.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0092-22.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0097-23.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0099-24.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0105-25.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0117-26.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0123-27.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0128-29.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0130-30.jpg', alt: 'puberty photography' },
+                  { src: 'puberty/SPBS0133-31.jpg', alt: 'puberty photography' }
+                ],
+                family: [
+                  { src: 'family/a1.jpg', alt: 'family photoshoot' },
+                  { src: 'family/GK1_5792.jpg', alt: 'family photoshoot' },
+                  { src: 'family/GK1_5797.jpg', alt: 'family photoshoot' },
+                  { src: 'family/GK1_5800.jpg', alt: 'family photoshoot' },
+                  { src: 'family/GK1_5826.jpg', alt: 'family photoshoot' },
+                  { src: 'family/GK1_5908.jpg', alt: 'family photoshoot' },
+                  { src: 'family/PRFT3049.jpg', alt: 'family photoshoot' },
+                  { src: 'family/PRFT3215.jpg', alt: 'family photoshoot' },
+                  { src: 'family/PRFT3298.jpg', alt: 'family photoshoot' },
+                  { src: 'family/PRFT3418.jpg', alt: 'family photoshoot' },
+                  { src: 'family/SPBS4499.jpg', alt: 'family photoshoot' },
+                  { src: 'family/SPBS9509-15.jpg', alt: 'family photoshoot' },
+                  { src: 'family/SPBS9540-26.jpg', alt: 'family photoshoot' },
+                  { src: 'family/SPBS9600-39.jpg', alt: 'family photoshoot' }
+                ],
+                babyshower: [
+    { src: 'baby shower/1.jpg', alt: 'baby shower photography' },
+    { src: 'baby shower/GK1_5239.jpg', alt: 'baby shower photography' },
+    { src: 'baby shower/GK1_5300.jpg', alt: 'baby shower photography' },
+    { src: 'baby shower/GK1_5305.jpg', alt: 'baby shower photography' },
+    { src: 'baby shower/GK1_5325.jpg', alt: 'baby shower photography' },
+    { src: 'baby shower/GK1_5334.jpg', alt: 'baby shower photography' },
+    { src: 'baby shower/GK1_5363.jpg', alt: 'baby shower photography' },
+    { src: 'baby shower/GK1_5366.jpg', alt: 'baby shower photography' },
+    { src: 'baby shower/GK1_5371.jpg', alt: 'baby shower photography' },
+    { src: 'baby shower/SPBS9195-272.jpg', alt: 'baby shower photography' },
+    { src: 'baby shower/SPBS9530-22.jpg', alt: 'baby shower photography' },
+    { src: 'baby shower/SPBS9538-25.jpg', alt: 'baby shower photography' },
+    { src: 'baby shower/SPBS9606-38a.jpg', alt: 'baby shower photography' },
+    { src: 'baby shower/SPBS9649-50.jpg', alt: 'baby shower photography' },
+    { src: 'baby shower/SPBS9665-53.jpg', alt: 'baby shower photography' },
+    { src: 'baby shower/SPBS9671-54.jpg', alt: 'baby shower photography' }
+]
+            };
+
+            // Card click handler
+            const cards = document.querySelectorAll('.portfolio-card');
+            const lightbox = document.getElementById('portfolio-lightbox');
+            const lightboxTitle = document.getElementById('lightbox-title');
+            const lightboxGallery = document.getElementById('lightbox-gallery');
+            const closeBtn = document.querySelector('.close-lightbox');
+
+            // Card click handler - opens lightbox with masonry grid
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const category = this.getAttribute('data-category');
+                    const title = this.getAttribute('data-title');
+                    
+                    lightboxTitle.textContent = title;
+                    lightboxGallery.innerHTML = '';
+                    
+                    portfolioData[category].forEach(image => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'lightbox-item';
+                        
+                        const imgElement = document.createElement('img');
+                        imgElement.src = image.src;
+                        imgElement.alt = image.alt;
+                        
+                        itemDiv.appendChild(imgElement);
+                        lightboxGallery.appendChild(itemDiv);
+                        
+                        // Click handler for individual images
+                        itemDiv.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            showFullImage(image.src, image.alt);
+                        });
+                    });
+                    
+                    lightbox.style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+            // Show full image function
+            function showFullImage(src, alt) {
+                const fullImageView = document.getElementById('full-image-view');
+                const fullImage = document.getElementById('full-image');
+                const fullImageCaption = document.getElementById('full-image-caption');
+                
+                fullImage.src = src;
+                fullImage.alt = alt;
+                fullImageCaption.textContent = alt;
+                fullImageView.style.display = 'block';
+            }
+            
+            // Close full image view
+            document.querySelector('.close-full-view').addEventListener('click', function() {
+                document.getElementById('full-image-view').style.display = 'none';
+            });
+            
+            // Close full image when clicking outside
+            document.getElementById('full-image-view').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+            
+            // Close lightbox
+            closeBtn.addEventListener('click', function() {
+                lightbox.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Close when clicking outside content
+            lightbox.addEventListener('click', function(e) {
+                if (e.target === lightbox) {
+                    lightbox.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Search functionality
+            const searchInput = document.getElementById('portfolio-search');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                cards.forEach(card => {
+                    const title = card.getAttribute('data-title').toLowerCase();
+                    if (title.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Initialize
+        window.addEventListener('load', checkScroll);
+        window.addEventListener('scroll', checkScroll);
+
+        // Start Animations
+        let currentTaglineIndex = 0;
+        initWhatsApp();
+        taglineEl.textContent = config.taglines[0];
+        typeWriter(config.studioName, studioNameEl, animateUnderline);
+    </script>
+</body>
+</html>
