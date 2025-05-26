@@ -308,6 +308,118 @@
             color: #555;
             margin-bottom: 1.5rem;
         }
+        /* About Me Section Styles */
+.page-section .container {
+    display: flex;
+    align-items: center;
+    padding: 60px 10%;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-section .info {
+    flex: 1;
+    min-width: 300px;
+}
+
+.page-section .info h1 {
+    color: #d4af37; /* Changed to match your gold theme */
+    font-size: 36px;
+    font-family: 'Playfair Display', serif;
+}
+
+.page-section .info p {
+    font-size: 16px;
+    margin: 20px 0 10px;
+}
+
+.page-section .highlight {
+    color: #d4af37; /* Changed to match your gold theme */
+}
+
+.page-section .btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 24px;
+    background-color: #d4af37; /* Changed to match your gold theme */
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.page-section .btn:hover {
+    background-color: #c19b2c;
+    transform: translateY(-2px);
+}
+
+.page-section .image-section {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin-top: 20px;
+}
+
+.page-section .circle-bg {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background-color: #d4af37; /* Changed to match your gold theme */
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+.page-section .profile-pic {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 50%;
+    z-index: 1;
+    margin: 10px;
+    border: 5px solid white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.page-section .bio-section {
+    padding: 60px 10%;
+    background-color: #f8f8f8;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-section .bio-section h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #d4af37; /* Changed to match your gold theme */
+    font-family: 'Playfair Display', serif;
+}
+
+.page-section .bio-section p {
+    font-size: 18px;
+    line-height: 1.6;
+    max-width: 900px;
+    color: #555;
+}
+
+@media (max-width: 768px) {
+    .page-section .container {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 40px 20px;
+    }
+    
+    .page-section .image-section {
+        margin: 40px auto;
+    }
+    
+    .page-section .bio-section {
+        padding: 40px 20px;
+    }
+}
 
         /* Contact Us Section */
         .contact-section {
@@ -697,6 +809,7 @@
         <div class="nav-links">
             <a href="#" class="nav-link" data-section="home">Home</a>
             <a href="#" class="nav-link" data-section="about">About Us</a>
+            <a href="#" class="nav-link" data-section="about-me">About Me</a>
             <a href="#" class="nav-link" data-section="works">Our Works</a>
             <a href="#" class="nav-link" data-section="contact">Contact Us</a>
         </div>
@@ -788,6 +901,32 @@
             <p>We specialize in wedding photography, portrait sessions, and commercial shoots, offering a personalized approach to each client. Our state-of-the-art studio is equipped with the latest technology, ensuring stunning results whether we're shooting on location or in our controlled studio environment.</p>
         </div>
     </section>
+        <!-- About Me Section -->
+<section id="about-me" class="page-section">
+    <div class="container">
+        <div class="info">
+            <h1>About Me</h1>
+            <p><strong>NAME</strong><br><span class="highlight">vinoth</span></p>
+            <p><strong>EMAIL</strong><br><span class="highlight">vinoth.vr72@gmail.com</span></p>
+            <p><strong>ROLE</strong><br>Photographer</p>
+            <p><strong>PHONE</strong><br>+91 9790030723</p>
+            <a href="VINOTH CV 1.jpg" download class="btn">Download Resume</a>
+        </div>
+        <div class="image-section">
+            <div class="circle-bg"></div>
+            <img src="GK1_1138_1.JPG" alt="Profile Picture" class="profile-pic">
+        </div>
+    </div>
+
+    <div class="bio-section">
+        <h2></h2>
+        <p>welcome! My name is <b>Vinothraj</b> <br><br />
+        # Certified professional photographer with 5+ years of experience <br><br>
+          Photography is an art that requires a keen eye, technical skills and passion for capturing moments.
+As a certified professional photographer with over five years of experience .I have honed my craft and developed expertise in various genres , including portrait photography, landscapes, wedding and product photography . My journey as a freelance photographer has allowed me to explore my creativity and deliver exceptional results to my clients.
+        </p>
+    </div>
+</section>
 
     <!-- Our Works Section -->
     <section id="works" class="page-section works-section">
